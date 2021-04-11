@@ -7,6 +7,9 @@ app = Chalice(app_name='email-processor')
 def index():
     return {'hello': 'world'}
 
+@app.on_s3_event(bucket='mail.cloudmatica.com', events=['s3:ObjectCreated:*'])
+def handle_s3_event(event):
+    print(f"Received event for bucket: {event.bucket}, key: {event.key}")
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to '/'.
