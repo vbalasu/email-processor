@@ -17,7 +17,10 @@ def echo(filename):
     sender = msg.get('From')
     subject = msg.get('Subject')
     body_text = msg.get_body('plain').get_payload()
-    body_html = msg.get_body('html').get_payload()
+    try:
+        body_html = msg.get_body('html').get_payload()
+    except AttributeError:
+        body_html = ''
     print(sender, subject, body_text, body_html)
     import boto3
     ses = boto3.client('ses')
