@@ -1,0 +1,60 @@
+Return-Path: <vbalasu@gmail.com>
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+ by inbound-smtp.us-east-1.amazonaws.com with SMTP id uigmkkrnmvifldu63a4qhl81k91gefh7r3mnug81
+ for echo@cloudmatica.com;
+ Fri, 09 Apr 2021 13:29:40 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: pass (spfCheck: domain of _spf.google.com designates 209.85.219.179 as permitted sender) client-ip=209.85.219.179; envelope-from=vbalasu@gmail.com; helo=mail-yb1-f179.google.com;
+Authentication-Results: amazonses.com;
+ spf=pass (spfCheck: domain of _spf.google.com designates 209.85.219.179 as permitted sender) client-ip=209.85.219.179; envelope-from=vbalasu@gmail.com; helo=mail-yb1-f179.google.com;
+ dkim=pass header.i=@gmail.com;
+ dmarc=pass header.from=gmail.com;
+X-SES-RECEIPT: AEFBQUFBQUFBQUFIYk1OUUZBSUZXbDcrTnV6YnpUV0RDWXVnSlg0ODBMWGMvMk9FaWhreGZ5em5YekRmQ3Fhb0RXc0lKSU9Za0ZJeEliZWZOTlJUL0RXVXVzYkpSa3pKeWpTY2RyMXJQTXhEMkhEMFBCcjBRUkNoVnlyZmEyVU41dE5kbDJWYVU1dGlkQnFaaC9nK2FQWmhOU3VrUCtMNXZwMHpmcDVndzJFV3VKY0JEOGxCR0lja1UyUHlBMFJvK2RiMXVTTzZJRkp6Y1V6eFcvd3JUemZzRE5WUGJlVFh6RWtCTXdTK2dtZjZkS0lEU1hTMFNuak9PZEVOVjVVSGFaZVRkRE8zaG1meXBwdXdkK2dGbjVyaUpQeDhtVjNaSWZYMDUrcE4wZjkwVFJEZXVLOGFFY1E9PQ==
+X-SES-DKIM-SIGNATURE: a=rsa-sha256; q=dns/txt; b=fPZmGb2kxhfBFUBwpKpI0/B1adLO8zeGmdKw+2+HzJ08SuD5ViFz3F7xgWzkIsk+kTKz+1MQiQPLU9OKsF/6LwqEWTpfT4ecXINLr3rPkNV2/P3ROIATrJCNncONkrF18jf99i8993euYCW3zBZDhY+TRlNJeAe7izoy/4yASlQ=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1617974980; v=1; bh=Y1MGm8f7ZfmMgKxsRrgwPM7TRy+LiuSYIWKxIXOtzOI=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;
+Received: by mail-yb1-f179.google.com with SMTP id o10so6553274ybb.10
+        for <echo@cloudmatica.com>; Fri, 09 Apr 2021 06:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Y1MGm8f7ZfmMgKxsRrgwPM7TRy+LiuSYIWKxIXOtzOI=;
+        b=ZGoFsIAWR51Tjloyuf8jvtuK/ga58jsnRVhPxV91q795GDOZzksS3SGp4gvxQsYPxF
+         LQcG9EoX1drCooOSJXca3Dd3yWHt2HL/ivsQQSQ25EWP/vtf/l6bANaq5cAJJ7Tzvwfa
+         j94jab9k1grK36pUkHgGz2af/iy/yw/ms/KrF1e60rAwmx91wuUCwrs+qjYAgdPRR5vY
+         jV7I8LUqQiP1re2peb48SXb5/eSGjRZTmh0dVLsSwpA80BHia99plGb6g45fnmtzH7Fs
+         WYt3qyc4IB7izVnULlnhh0lXMYUQ05ETYKTMptCytbQSOnnRALaW1zLJb2ZwSljekZhu
+         sYsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Y1MGm8f7ZfmMgKxsRrgwPM7TRy+LiuSYIWKxIXOtzOI=;
+        b=qAuCW8ZMn+j1ie6zdubTXKehfKkJwEad5u0eKvPuLUy7mv9ro8zpS8o2z3nYUjIruj
+         42DpnCLxg1LmEkytko4ZSgXSAU/TJw1gHHWdsh044ZkSXNRmE91ET1B+YJKo+D66JJ5p
+         htYa0B2fA+dgqOb6yQZk6vO6H4XArg77ujHai4a1KbiaXLm1H+ovjY+lwat/w013z2wn
+         YhUT8SSLtVHElaJrFDEhK5M/bJ8GTw1DSgccjruV/UjCI79KF4pPoYEujU0qImTjR+By
+         iRs+38DaYO6Iy6D3E8goa3fAYrJcfVwAitN/vQMO7Q9Xx6vXau3yTF1/y7y8piEhNyVA
+         EnSQ==
+X-Gm-Message-State: AOAM532RU24Qf6QMm3Z6IXnkh7Waf/isfgpChRWHogkBw/p7XFaBQXVr
+	hfw5/yKPcKgCm/vu/Ifn6wOqGyIBGsRTsFGTfE7wqng6FZA=
+X-Google-Smtp-Source: ABdhPJwNPLTSdY3CgVEW+T9X/jI0mnFy+6vCpfRde+z+a9k8FaINxlpSOnb877OYLRqVqW2tltvFxz1ERhs/yT+3/mI=
+X-Received: by 2002:a25:a226:: with SMTP id b35mr17468027ybi.275.1617974979668;
+ Fri, 09 Apr 2021 06:29:39 -0700 (PDT)
+MIME-Version: 1.0
+From: Vijay Balasubramaniam <vbalasu@gmail.com>
+Date: Fri, 9 Apr 2021 06:29:28 -0700
+Message-ID: <CAFcAUQnfOHDRbAOUWo3-rvOB6=hw6bQAmBqtDJRzrxHNQsXNdQ@mail.gmail.com>
+Subject: Echo Message mail.cloudmatica.com
+To: echo@cloudmatica.com
+Content-Type: multipart/alternative; boundary="000000000000eb2c5605bf8a272b"
+
+--000000000000eb2c5605bf8a272b
+Content-Type: text/plain; charset="UTF-8"
+
+test body
+
+--000000000000eb2c5605bf8a272b
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">test body</div>
+
+--000000000000eb2c5605bf8a272b--
