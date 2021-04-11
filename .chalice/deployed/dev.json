@@ -16,17 +16,6 @@
       "resource_type": "s3_event",
       "bucket": "mail.cloudmatica.com",
       "lambda_arn": "arn:aws:lambda:us-east-1:251566558623:function:email-processor-dev-handle_s3_event"
-    },
-    {
-      "name": "api_handler",
-      "resource_type": "lambda_function",
-      "lambda_arn": "arn:aws:lambda:us-east-1:251566558623:function:email-processor-dev"
-    },
-    {
-      "name": "rest_api",
-      "resource_type": "rest_api",
-      "rest_api_id": "ob9ozqzim1",
-      "rest_api_url": "https://ob9ozqzim1.execute-api.us-east-1.amazonaws.com/api/"
     }
   ],
   "schema_version": "2.0",
