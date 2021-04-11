@@ -2,11 +2,6 @@ from chalice import Chalice
 
 app = Chalice(app_name='email-processor')
 
-
-@app.route('/')
-def index():
-    return {'hello': 'world'}
-
 @app.on_s3_event(bucket='mail.cloudmatica.com', events=['s3:ObjectCreated:*'])
 def handle_s3_event(event):
     print(f"Received event for bucket: {event.bucket}, key: {event.key}")
