@@ -16,9 +16,9 @@ def echo(filename):
         msg = email.message_from_file(f, policy=policy.default)
     sender = msg.get('From')
     subject = msg.get('Subject')
-    body_text = msg.get_body('plain').get_payload()
+    body_text = msg.get_body('plain').get_payload(decode=True)
     try:
-        body_html = msg.get_body('html').get_payload()
+        body_html = msg.get_body('html').get_payload(decode=True)
     except AttributeError:
         body_html = ''
     print(sender, subject, body_text, body_html)
@@ -29,8 +29,8 @@ def echo(filename):
     response['To'] = sender
     response['Subject'] = subject
     response['From'] = 'echo@cloudmatica.com'
-    response.set_content(body_text, subtype='plain')
-    response.add_alternative(body_html, subtype='html')
+    response.set_content(body_text, maintype='text', subtype='plain')
+    response.add_alternative(body_html, maintype='text', subtype='html')
     for a in msg.iter_attachments():
         response.attach(a)
     ses.send_raw_email(RawMessage={'Data': response.as_bytes()})
