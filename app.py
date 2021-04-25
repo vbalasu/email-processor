@@ -36,6 +36,50 @@ def echo(filename):
     ses.send_raw_email(RawMessage={'Data': response.as_bytes()})
     return True
 
+def read_body_text(filename):
+    import email
+    from email import policy
+    with open(filename) as f:
+        msg = email.message_from_file(f, policy=policy.default)
+    body_text = msg.get_body('plain').get_payload(decode=True)
+    return str(body_text)
+
+def tts(text, language='en', slow=False):
+    from gtts import gTTS
+    import hashlib
+    myobj = gTTS(text=text, lang=language, slow=slow)
+    filename = '/tmp/' + hashlib.sha256(text.encode('utf8')).hexdigest() + '.mp3'
+    myobj.save(filename)
+    return filename
+
+def mp3_get_s3_url(filename):
+    import boto3
+    s3 = boto3.client('s3')
+    s3_bucket = 'cloudmatica'
+    s3_key = filename.replace('/tmp/', '1d/')
+    s3.upload_file(filename, s3_bucket, s3_key)
+    s3_url = s3.generate_presigned_url('get_object', {'Bucket': s3_bucket, 'Key': s3_key}, ExpiresIn=86400)
+    with open('/tmp/url.txt', 'w') as f:
+        f.write(s3_url)
+    return s3_url
+
+def compose_response(s3_url, recipient='vbalasu@gmail.com', sender='listen@cloudmatica.com', subject='Your audio is ready'):
+    import boto3, re
+    message = '/tmp/' + re.search('1d/(.*?).mp3', s3_url).group(1) + '.eml'
+    ses = boto3.client('ses')
+    from email.message import EmailMessage
+    from email import policy
+    response = EmailMessage(policy=policy.default)
+    response['To'] = recipient
+    response['Subject'] = subject
+    response['From'] = sender
+    body_text = s3_url
+    response.set_content(body_text, subtype='plain')
+    with open(message, 'wb') as f:
+        f.write(response.as_bytes())
+    ses.send_raw_email(RawMessage={'Data': response.as_bytes()})
+    return message
+
 @app.on_s3_event(bucket='mail.cloudmatica.com', events=['s3:ObjectCreated:*'])
 def handle_s3_event(event):
     print(f"Received event for bucket: {event.bucket}, key: {event.key}")
