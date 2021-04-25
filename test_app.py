@@ -42,3 +42,6 @@ def test_compose_response():
     assert message == filename.replace('.mp3', '.eml')
     import os
     assert os.path.exists(message)
+
+def test_send_email():
+    assert app.send_email('/tmp/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9.eml') == True

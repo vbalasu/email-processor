@@ -80,6 +80,14 @@ def compose_response(s3_url, recipient='vbalasu@gmail.com', sender='listen@cloud
     ses.send_raw_email(RawMessage={'Data': response.as_bytes()})
     return message
 
+def send_email(message):
+    import boto3
+    ses = boto3.client('ses')
+    with open(message, 'rb') as f:
+        email_bytes = f.read()
+    ses.send_raw_email(RawMessage={'Data': email_bytes})
+    return True
+
 # Integration
 def email_to_speech(bucket_name, key):
     filename = download_file(bucket_name, key)
@@ -87,13 +95,14 @@ def email_to_speech(bucket_name, key):
     audio_filename = tts(body_text)
     s3_url = mp3_get_s3_url(audio_filename)
     message = compose_response(s3_url)
-    return message
+    return send_email(message)
 
 @app.on_s3_event(bucket='mail.cloudmatica.com', events=['s3:ObjectCreated:*'])
 def handle_s3_event(event):
     print(f"Received event for bucket: {event.bucket}, key: {event.key}")
-    filename = download_file(event.bucket, event.key)
-    echo(filename)
+    #filename = download_file(event.bucket, event.key)
+    #echo(filename)
+    email_to_speech(event.bucket, event.key)
 
 
 
