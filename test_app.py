@@ -10,10 +10,6 @@ def test_get_mail():
     app.download_file(bucket_name, key)
     assert os.path.exists(filename)
 
-#def integration_test_echo():
-#    filename = '/tmp/81nim74n8q0h8q70sg3inomd5v78lhgsd6njq0o1'
-#    assert app.echo(filename) == True
-
 def test_read_body_text():
     filename = '/tmp/81nim74n8q0h8q70sg3inomd5v78lhgsd6njq0o1'
     body_text = app.read_body_text(filename)
