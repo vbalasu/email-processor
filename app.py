@@ -77,7 +77,6 @@ def compose_response(s3_url, recipient='vbalasu@gmail.com', sender='listen@cloud
     response.set_content(body_text, subtype='plain')
     with open(message, 'wb') as f:
         f.write(response.as_bytes())
-    ses.send_raw_email(RawMessage={'Data': response.as_bytes()})
     return message
 
 def send_email(message):
