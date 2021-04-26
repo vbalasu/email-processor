@@ -41,7 +41,7 @@ def read_body_text(filename):
     from email import policy
     with open(filename) as f:
         msg = email.message_from_file(f, policy=policy.default)
-    body_text = msg.get_body('plain').get_payload(decode=True)
+    body_text = msg.get_body('plain').get_payload(decode=True).decode()
     return str(body_text)
 
 def tts(text, language='en', slow=False):
