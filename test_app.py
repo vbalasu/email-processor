@@ -22,6 +22,7 @@ def test_parse_mail():
     print(email_parts)
     assert email_parts['subject'] == 'Fwd: Test incoming email into S3'
     assert email_parts['sender'] == 'Vijay Balasubramaniam <vbalasu@gmail.com>'
+    assert 'cloudmatica.com' in email_parts['recipient']
     assert 'one more time' in email_parts['body_text']
     assert 'one more time' in email_parts['body_html']
 
@@ -59,7 +60,9 @@ def test_compose_response():
     email_parts = {
         'subject': 'Fwd: Test incoming email into S3',
         'sender': 'Vijay Balasubramaniam <vbalasu@gmail.com>',
-        'body_text': 'one more time\n'
+        'recipient': 'listen@cloudmatica.com',
+        'body_text': 'one more time\n',
+        'body_html': '<strong>one more time</strong>'
     }
     s3_url = app.mp3_get_s3_url(filename)
     message = app.compose_response(s3_url, email_parts)
@@ -67,6 +70,9 @@ def test_compose_response():
     import os
     print(message)
     assert os.path.exists(message)
+    response_parts = app.parse_email(message)
+    print(response_parts)
+    assert '<strong>one more time</strong>' in response_parts['body_html']
 
 def test_send_email():
     assert app.send_email('/tmp/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9.eml') == True

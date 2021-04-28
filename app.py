@@ -16,6 +16,7 @@ def parse_email(filename):
         msg = email.message_from_file(f, policy=policy.default)
     sender = msg.get('From')
     subject = msg.get('Subject')
+    recipient = msg.get('To')
     body_text = msg.get_body('plain').get_payload(decode=True).decode()
     try:
         body_html = msg.get_body('html').get_payload(decode=True).decode()
@@ -24,6 +25,7 @@ def parse_email(filename):
     return {
         'subject': subject,
         'sender': sender,
+        'recipient': recipient,
         'body_text': body_text,
         'body_html': body_html
     }
@@ -87,6 +89,7 @@ def compose_response(s3_url, email_parts):
     sender='listen@cloudmatica.com'
     subject=email_parts['subject']
     body_text = s3_url + '\n\n' + email_parts['body_text']
+    body_html = f'<a href="{s3_url}">Download audio</a><br><br>' + email_parts['body_html']
     import boto3, re
     message = '/tmp/' + re.search('1d/(.*?).mp3', s3_url).group(1) + '.eml'
     ses = boto3.client('ses')
@@ -98,6 +101,7 @@ def compose_response(s3_url, email_parts):
     response['From'] = sender
     body_text = s3_url
     response.set_content(body_text, subtype='plain')
+    response.add_alternative(body_html, subtype='html')
     with open(message, 'wb') as f:
         f.write(response.as_bytes())
     return message
