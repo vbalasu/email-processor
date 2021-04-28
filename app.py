@@ -9,6 +9,25 @@ def download_file(bucket_name, key):
     s3.download_file(bucket_name, key, filename)
     return filename
 
+def parse_email(filename):
+    import email
+    from email import policy
+    with open(filename) as f:
+        msg = email.message_from_file(f, policy=policy.default)
+    sender = msg.get('From')
+    subject = msg.get('Subject')
+    body_text = msg.get_body('plain').get_payload(decode=True).decode()
+    try:
+        body_html = msg.get_body('html').get_payload(decode=True).decode()
+    except AttributeError:
+        body_html = ''
+    return {
+        'subject': subject,
+        'sender': sender,
+        'body_text': body_text,
+        'body_html': body_html
+    }
+
 def echo(filename):
     import email
     from email import policy
@@ -63,7 +82,11 @@ def mp3_get_s3_url(filename):
         f.write(s3_url)
     return s3_url
 
-def compose_response(s3_url, recipient='vbalasu@gmail.com', sender='listen@cloudmatica.com', subject='Your audio is ready'):
+def compose_response(s3_url, email_parts):
+    recipient=email_parts['sender']
+    sender='listen@cloudmatica.com'
+    subject=email_parts['subject']
+    body_text = s3_url + '\n\n' + email_parts['body_text']
     import boto3, re
     message = '/tmp/' + re.search('1d/(.*?).mp3', s3_url).group(1) + '.eml'
     ses = boto3.client('ses')
@@ -90,10 +113,11 @@ def send_email(message):
 # Integration
 def email_to_speech(bucket_name, key):
     filename = download_file(bucket_name, key)
-    body_text = read_body_text(filename)
+    email_parts = parse_email(filename)
+    body_text = email_parts['body_text']
     audio_filename = tts(body_text)
     s3_url = mp3_get_s3_url(audio_filename)
-    message = compose_response(s3_url)
+    message = compose_response(s3_url, email_parts)
     return send_email(message)
 
 @app.on_s3_event(bucket='mail.cloudmatica.com', events=['s3:ObjectCreated:*'])
